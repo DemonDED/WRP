@@ -33,6 +33,9 @@ export default {
       tokenAuth: [],
     }
   },
+  // mounted() {
+  //   document.cookie = cookie;
+  // },
   methods: {
     guestSession() {
       const mainContent = document.getElementById('content');
@@ -40,6 +43,7 @@ export default {
 
       mainContent.style.webkitFilter = 'blur(0px)';
       authWindow.style.display = 'none';
+      document.cookie ='guest';
     },
     authSession() {
       const enterButton = document.getElementById('enterButton');
@@ -61,13 +65,15 @@ export default {
 
       // testing authorization \\
 
-      xhr.open('POST', 'http://localhost:3000/auth', true);
+      xhr.open('POST', 'http://localhost:3001/auth', true);
       xhr.send(`{"username": "${login}", "password": "${password}"}`)
       xhr.responseType = 'json';
       this.tokenAuth = JSON.parse(xhr.response);
       alert(this.tokenAuth);
+      document.cookie = `${document.cookie};max-age:0;`
+      document.cookie = this.tokenAuth;
 
-      if (login.value == 'admin' && password.value == 'Ktubjy') {
+      if (document.cookie) {
         setTimeout(() => {
           loader.style.display = 'none';
           okLoad.style.display = 'inline';

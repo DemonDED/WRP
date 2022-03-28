@@ -1,12 +1,13 @@
 <template>
   <div id="Main">
-    <AuthorizationVue id="authForm" />
+    <AuthorizationVue id="authForm" v-show="!cookie"/>
     <div id="preloader">
       <div id="loader"></div>
     </div>
     <div id="content">
     <div id="menu">
       <h1>MASTER-08</h1>
+      <button id="exit" @click='exit()' v-show="cookie">Выйти</button>
       <div id="buttonsForMenu">
         <router-link class="menuPunkt" :to="{ name: 'Monitoring' }">МОНИТОРИНГ</router-link>
         <router-link class="menuPunkt" :to="{ name: 'About' }">ТЕСТИРОВАНИЕ</router-link>
@@ -38,13 +39,14 @@
 import AuthorizationVue from './components/Authorization.vue';
 
 const xhr = new XMLHttpRequest();
-
+let cookie = document.cookie;
 export default {
   name: 'App',
   components: AuthorizationVue,
   data() {
     return {
       titelXhr: [],
+      cookie,
     }
   },
   mounted() {
@@ -74,7 +76,10 @@ export default {
 
       }, 3000) 
       
-    }
+    },
+    exit() {
+      document.cookie = `${document.cookie};max-age=0;`;
+    },
   }
 }
 </script>
@@ -193,5 +198,14 @@ export default {
   }
   .granch {
     margin-right: 5em;
+  }
+
+  #exit {
+    color: chocolate;
+    background: none;
+    border: 1px solid gray;
+    border-radius: 10px;
+    width: 5em;
+    cursor: pointer;
   }
 </style>

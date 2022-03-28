@@ -1,5 +1,4 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Monitoring from '../views/Monitoring.vue'
 
 
 
@@ -7,7 +6,7 @@ const routes = [
   {
     path: '/',
     name: 'Monitoring',
-    component: Monitoring
+    component: () => import('../views/Monitoring.vue')
   },
   {
     path: '/about',
@@ -15,13 +14,28 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    beforeEnter: () => {
+      if (!document.cookie && document.cookie != 'guest') {
+        return({name: 'warningForGuest'})
+      }
+    } 
   },
   {
     path: '/settings',
     name: 'Settings',
-    component: () => import('../views/SettingWidget.vue')
-  }
+    component: () => import('../views/SettingWidget.vue'),
+    beforeEnter: () => {
+      if (!document.cookie && document.cookie != 'guest') {
+        return({name: 'warningForGuest'})
+      }
+    } 
+  },
+  {
+    path: '/warningForGuest',
+    name: 'warningForGuest',
+    component: () => import('../views/notAuth.vue')
+  },
 ]
 
 const router = createRouter({

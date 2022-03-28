@@ -63,36 +63,46 @@ export default {
   data() {
     return {
       wsDataMonitoring: [],
+      wsMonitoring: null,
     }
   },
   mounted() {
 
-    if (this.webSocketMonitoring === null || this.webSocketMonitoring.readyState !== WebSocket.OPEN) {
-      if (this.webSocketMonitoring !== null) { this.webSocketMonitoring.close(); }
-      this.webSocketMonitoring();
-    }
+    
+    this.webSocketMonitoring();
+    
 
   },
   methods: {
     webSocketMonitoring() {
 
-      const wsMonitoring = new WebSocket(`ws://${urlHostName}:3000/monitoring`);
+    if (this.wsMonitoring === null || this.wsMonitoring.readyState !== WebSocket.OPEN) {
 
-      wsMonitoring.onopen = function(event) {
-        console.log('WebSocketMonitoring открыт...');
+      if (this.wsMonitoring !== null) { this.wsMonitoring.onclose(); }
+      this.wsMonitoring = new WebSocket(`ws://${urlHostName}:3000/monitoring`);
+
+      this.wsMonitoring.onopen = function(event) {
+        console.log(`[open] Соединение установлено: ${event.code}`);
       }
-      wsMonitoring.onmessage = function(event) {
+      this.wsMonitoring.onmessage = function(event) {
         this.wsDataMonitoring = JSON.parse(event.data);
-        console.log('Данные WebSocketMonitoring получены...');
+        console.log('[message] Данные WebSocketMonitoring получены...');
       }
-      wsMonitoring.onerror = function(error) {
-        console.log('WebSocketMonitoring Error: ' + error);
+      this.wsMonitoring.onerror = function(error) {
+        console.log('[error] WebSocketMonitoring Error: ' + error);
       }
-      wsMonitoring.onclose = function(event) {
-        console.log('WebSocketMonitoring закрыто...')
-        setInterval( () => {
-          this.webSocketMonitoring();
-        }, 2500)
+      this.wsMonitoring.onclose = function(event) {
+        if (event.wasClean) {
+          console.log(`[close] Соединение закрыто чисто, код=${event.code} причина=${event.reason}`);
+        } else {
+          console.log('Соединение прервано...');
+        }
+        
+        // setInterval( () => {
+        //   console.log("[reconnect] Попытка переподключения к серверу...")
+        //   this.webSocketMonitoring();
+        // }, 2500)
+      }
       }
 
     }
