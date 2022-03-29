@@ -6,13 +6,18 @@
         <h1>НАСТРОЙКИ</h1>  
       </div>
     <div class="settingsForIp" v-for="item in dataSettings.network" :key="item"> 
-      <label for="ipValueForSettings" >{{item.name}}</label>
-      <input class="enterI" name="ipValueForSettings" type="text">
+      <label for="ipValueForSettings" >{{ item.name }}</label>
+      <input class="enterIp" name="ipValueForSettings" type="text">
     </div>
-    <input class="enterIp" id="test" type="text" pattern="(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))">
-    <input class="enterIp" id="test" type="text" pattern="(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))">
-    <input class="enterIp" id="test" type="text" pattern="(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))">
 
+    <div class="gpioSettings" v-for="gpio in dataSettings.gpio_power" :key="gpio">
+      <label for='checkBox'>{{ gpio.name }}</label>
+      <input type="checkbox" name="checkBox" :id="gpio.name">
+    </div>
+
+    <!--<input class="enterIp" id="test" type="text" pattern="(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))">
+    <input class="enterIp" id="test" type="text" pattern="(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))">
+    <input class="enterIp" id="test" type="text" pattern="(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))">-->
 
   </div>
 
@@ -124,8 +129,11 @@ export default {
       let okId = 'okForBtn';
       let textId = 'textForBtn';
       this.loaderForButtons(buttonId, loaderId, okId, textId);
+
+
+
       xhr.open( 'POST', `http://${urlHostName}/save_settings`, true );
-      xhr.send()
+      xhr.send('');
 
 
     //////Второй вариант обработчика\\\\\\
@@ -158,7 +166,7 @@ export default {
       let textId = 'textForBtn2';
       this.loaderForButtons(buttonId, loaderId, okId, textId);
       xhr.open( 'POST', `http://${urlHostName}/set_settings`, true );
-      xhr.send();
+      xhr.send('ok');
 
     },
     rebootBs() {

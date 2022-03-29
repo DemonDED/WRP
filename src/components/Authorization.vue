@@ -24,6 +24,7 @@
 
 <script>
 const xhr = new XMLHttpRequest();
+const urlHostName = window.location.hostname;
 let timeToBlock = 0;
 
 export default {
@@ -65,11 +66,10 @@ export default {
 
       // testing authorization \\
 
-      xhr.open('POST', 'http://localhost:3001/auth', true);
+      xhr.open('POST', `http://${urlHostName}/fcgi/login`, true);
       xhr.send(`{"username": "${login}", "password": "${password}"}`)
       xhr.responseType = 'json';
       this.tokenAuth = JSON.parse(xhr.response);
-      alert(this.tokenAuth);
       document.cookie = `${document.cookie};max-age:0;`
       document.cookie = this.tokenAuth;
 

@@ -11,32 +11,39 @@
         <div class="zag-1">
           <h1 class='h1'>Основная информация</h1>
         </div>
-
-          <label style="font-size: 30px" for="" v-for="(value, name) in wsDataMonitoring.header" :key="name">{{ name }} <span>{{ value }}</span> </label>
-          <label style="font-size: 30px" for="" v-for="(value, name) in wsDataMonitoring.sysmon" :key="name">{{ name }} <span>{{ value }}</span> </label>
-
+          <div class="dataWs" v-for="(value, name) in this.wsDataMonitoring.header" :key="name">
+            <label style="font-size: 25px" for="" >{{ name }}</label> <span style="font-size: 25px">{{ value }}</span>
+          </div>
+          <div class="dataWs" v-for="(value, name) in this.wsDataMonitoring.sysmon" :key="name">
+            <label style="font-size: 25px" for="" >{{ name }}</label> <span style="font-size: 25px">{{ value }}</span>
+          </div>
+          
       </div>
       <div class="blockMainInformation">
 
         <div class="zag-1">
           <h1 class='h1'>Питание</h1>
         </div>
-          <label style="font-size: 30px" for="" v-for='(value, name) in wsDataMonitoring.powermon' :key="name">{{ name }} <span>{{ value }}</span> </label>
-          <label style="font-size: 30px" for="" v-for='item in wsDataMonitoring.gpio_power' :key="item">{{ item.name }} <span>{{ item.value }}</span> </label>
+          <div class="dataWs" v-for='(value, name) in this.wsDataMonitoring.powermon' :key="name">
+            <label style="font-size: 23px" for="" >{{ name }}</label> <span style="font-size: 23px">{{ value }}</span>
+          </div>
+          <div class="dataWs" v-for='item in this.wsDataMonitoring.gpio_power' :key="item">
+            <label style="font-size: 20px" for="" >{{ item.name }}</label> <span style="font-size: 23px">{{ item.value }}</span>
+          </div>
 
       </div>
     </div>
 
     <div>
-      <table>
-
-        <tr>
-          <th>Статус</th>
+      <div class="back"> <h1>Мониторинг</h1> </div>
+      <table id='monitoringTable'>
+        <tr class="hTable">
           <th>Порт</th>
           <th>MAC-адрес</th>
           <th>IP-адрес</th>
           <th>Tx</th>
           <th>Rx</th>
+          <th>Статус</th>
         </tr>
 
         <tr v-for='item in wsDataMonitoring.network' :key="item">
@@ -57,6 +64,7 @@
 <script>
 // @ is an alias to /src
 const urlHostName = window.location.hostname;
+const xhr = new XMLHttpRequest();
 
 export default {
   name: 'Home',
@@ -67,9 +75,12 @@ export default {
     }
   },
   mounted() {
-
-    
-    this.webSocketMonitoring();
+    xhr.open('GET', 'http://localhost:3001/first_stage', true)
+    xhr.send();
+    xhr.onload = () => {
+      this.wsDataMonitoring = JSON.parse(xhr.response);
+    }
+    // this.webSocketMonitoring();
     
 
   },
@@ -84,7 +95,7 @@ export default {
       this.wsMonitoring.onopen = function(event) {
         console.log(`[open] Соединение установлено: ${event.code}`);
       }
-      this.wsMonitoring.onmessage = function(event) {
+      this.wsMonitoring.onmessage = (event) => {
         this.wsDataMonitoring = JSON.parse(event.data);
         console.log('[message] Данные WebSocketMonitoring получены...');
       }
@@ -98,10 +109,10 @@ export default {
           console.log('Соединение прервано...');
         }
         
-        // setInterval( () => {
-        //   console.log("[reconnect] Попытка переподключения к серверу...")
-        //   this.webSocketMonitoring();
-        // }, 2500)
+        setInterval( () => {
+          console.log("[reconnect] Попытка переподключения к серверу...")
+          this.webSocketMonitoring();
+        }, 2500)
       }
       }
 
@@ -135,6 +146,13 @@ export default {
     flex-direction: row;
     justify-content: space-around;
   }
+  .dataWs {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    color: #FFB300;
+    width: 100%;
+  }
   .blockMainInformation {
     display: flex;
     justify-content: center;
@@ -145,6 +163,7 @@ export default {
     box-shadow: 0px 0.1px 0.3px 0px;
     width: 400px;
     height: 100%;
+    margin-bottom: 2em;
   }
   .zag-1 {
     display: flex;
@@ -154,6 +173,29 @@ export default {
     background:#363636; 
     border-radius: 10px 10px 0px 0px;
     position: relative;
-    box-shadow: 0px 1px 0.2px 0.2px;
+    text-shadow: black 0px 3px 2px;
+  }
+  #monitoringTable {
+    color: #FFB300;
+    font-size: 24px;
+    padding: 20px;
+  }
+  .back {
+    background: #363636;
+    background-size: cover;
+    width: 100%;
+    height: 3em;
+    top: 20px;
+    position: relative;
+    z-index: 2;
+    border-radius: 10px 10px 0px 0px;
+    color: #FFB300;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-shadow: black 0px 3px 2px;
+  }
+  .hTable {
+    z-index: 4;
   }
 </style>

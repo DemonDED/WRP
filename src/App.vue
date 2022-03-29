@@ -10,8 +10,8 @@
       
       <div id="buttonsForMenu">
         <router-link class="menuPunkt" :to="{ name: 'Monitoring' }">МОНИТОРИНГ</router-link>
-        <router-link class="menuPunkt" :to="{ name: 'About' }">ТЕСТИРОВАНИЕ</router-link>
-        <router-link class="menuPunkt" :to="{ name: 'Settings' }">ОБРАБОТЧИК</router-link>
+        <router-link class="menuPunkt" :to="{ name: 'About' }">ДОПОЛЬНИТЕЛЬНАЯ ИНФОРМАЦИЯ</router-link>
+        <router-link class="menuPunkt" :to="{ name: 'Settings' }">НАСТРОЙКИ</router-link>
       </div>
       <div id="connectionWithBS"> 
         <label for="">Связь с MASTER-08</label>
