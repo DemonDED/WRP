@@ -9,7 +9,7 @@
       <div class="blockMainInformation">
 
         <div class="zag-1">
-          <h1>Основная информация</h1>
+          <h1 class='h1'>Основная информация</h1>
         </div>
 
           <label style="font-size: 30px" for="" v-for="(value, name) in wsDataMonitoring.header" :key="name">{{ name }} <span>{{ value }}</span> </label>
@@ -19,7 +19,7 @@
       <div class="blockMainInformation">
 
         <div class="zag-1">
-          <h1>Питание</h1>
+          <h1 class='h1'>Питание</h1>
         </div>
           <label style="font-size: 30px" for="" v-for='(value, name) in wsDataMonitoring.powermon' :key="name">{{ name }} <span>{{ value }}</span> </label>
           <label style="font-size: 30px" for="" v-for='item in wsDataMonitoring.gpio_power' :key="item">{{ item.name }} <span>{{ item.value }}</span> </label>
@@ -115,7 +115,9 @@ export default {
   .home {
     padding: 50px;
   }
-
+  .h1 {
+    color: #FFB300;
+  }
   table {
     border-radius: 10px;
     background: #616161;
@@ -149,9 +151,9 @@ export default {
     justify-content: center;
     height: 10%;
     width: 100%;
-    background:#3B3B3B; 
+    background:#363636; 
     border-radius: 10px 10px 0px 0px;
     position: relative;
-    box-shadow: 0px 0.3px 0.2px 0.1px;
+    box-shadow: 0px 1px 0.2px 0.2px;
   }
 </style>

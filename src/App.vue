@@ -1,13 +1,13 @@
 <template>
   <div id="Main">
-    <AuthorizationVue id="authForm" v-show="!cookie"/>
+    <AuthorizationVue id="authForm" v-show="!this.cookie"/>
     <div id="preloader">
       <div id="loader"></div>
     </div>
     <div id="content">
     <div id="menu">
       <h1>MASTER-08</h1>
-      <button id="exit" @click='exit()' v-show="cookie">Выйти</button>
+      
       <div id="buttonsForMenu">
         <router-link class="menuPunkt" :to="{ name: 'Monitoring' }">МОНИТОРИНГ</router-link>
         <router-link class="menuPunkt" :to="{ name: 'About' }">ТЕСТИРОВАНИЕ</router-link>
@@ -18,6 +18,11 @@
         <div class="lvlConnection" id="lvl1"></div>
         <div class="lvlConnection" id="lvl2"></div>
         <div class="lvlConnection" id="lvl3"></div>
+
+        <button id="exit" @click='exit()' v-show="this.cookie && this.cookie != 'guest'">
+          Выйти
+        </button>
+        
       </div>
     </div>
     <div class="contentForRoute">
@@ -57,7 +62,7 @@ export default {
       mainContent.style.webkitFilter = 'blur(10px)';
     }
     
-    
+    this.cookie = document.cookie;
 
     // this.$nextTick(() => {
       // this.mainXhr();
@@ -79,6 +84,7 @@ export default {
     },
     exit() {
       document.cookie = `${document.cookie};max-age=0;`;
+      location.reload();
     },
   }
 }

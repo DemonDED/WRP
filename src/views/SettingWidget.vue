@@ -7,7 +7,7 @@
       </div>
     <div class="settingsForIp" v-for="item in dataSettings.network" :key="item"> 
       <label for="ipValueForSettings" >{{item.name}}</label>
-      <input class="enterIp" name="ipValueForSettings" type="text">
+      <input class="enterI" name="ipValueForSettings" type="text">
     </div>
     <input class="enterIp" id="test" type="text" pattern="(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))">
     <input class="enterIp" id="test" type="text" pattern="(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))">
@@ -93,27 +93,27 @@ export default {
 
     },
     testForIpValid() {
-      const buttonsForSettings = document.getElementsByClassName('btnForInterface');
-      let testResult = '';
+      // const buttonsForSettings = document.getElementsByClassName('btnForInterface');
+      const saveSettings = document.getElementById('saveSettings');
+      const acceptSettings = document.getElementById('acceptSettings');
       const ipValue = document.getElementsByClassName('enterIp');
       const regExp = /^(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))?$/;
-      for (let i = 0;i <= ipValue.length; i++) {
-        console.log('test');
-        
-        testResult = regExp.test(ipValue[i].value);
-       
-        if (!testResult) {
-          for (let i = 0; i<=buttonsForSettings.length; i++) {
-            console.log('test2');
-            buttonsForSettings[i].disabled = true;
-          }
-        } else {
-          for (let i = 0; i<=buttonsForSettings.length; i++) {
-            console.log('test3');
-            buttonsForSettings[i].disabled = false;
-          }
+      let check = 0;
+      for ( let i = 0 ; i<=ipValue.length ; i++ ) {
+        let testResult = regExp.test(ipValue[i].value);
+        if (testResult) {
+          check++;
         }
-       }
+      }
+      
+      if (check == ipValue.length) {
+        saveSettings.disabled = false;
+        acceptSettings.disabled = false;
+      } else {
+        saveSettings.disabled = true;
+        acceptSettings.disabled = true;
+      }
+       
     },
 
     acceptSettings() {

@@ -1,6 +1,6 @@
 <template>
   <div id="warningForGuest">
-    <h1 class='warningForGuest'>ПОЖАЛУЙСТА <br> ПРОЙДИТЕ АВТОРИЗАЦИЮ.</h1>
+    <h1 class='warningForGuest'>ПОЖАЛУЙСТА ПРОЙДИТЕ АВТОРИЗАЦИЮ.</h1>
     <h1 class='warningForGuest'>ВАШ УРОВЕНЬ ДОСТУПА ОГРАНИЧЕН!</h1>
   </div>
 </template>
@@ -14,7 +14,7 @@ export default {
 <style scoped>
   .warningForGuest {
     color: #F0AA00;
-
+    text-shadow: black 0px 3px 2px;
   }
   #warningForGuest {
     display: flex;
