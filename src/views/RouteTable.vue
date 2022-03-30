@@ -54,7 +54,7 @@ export default {
         this.routeData = JSON.parse(xhr.response);
       }
     },
-    ospfData() {
+    ospf_Data() {
       xhr.open( 'GET', `http://${urlHostName}/fcgi/ospf_table_monitoring`, true );
       xhr.send();
       xhr.onload = () => {

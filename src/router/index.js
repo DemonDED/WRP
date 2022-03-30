@@ -32,6 +32,46 @@ const routes = [
     } 
   },
   {
+    path: '/route_table',
+    name: 'RouteTable',
+    component: () => import('../views/RouteTable.vue'),
+    beforeEnter: () => {
+      if (!document.cookie || document.cookie == 'guest') {
+        return({name: 'warningForGuest'})
+      }
+    } 
+  },
+  {
+    path: '/devices',
+    name: 'Devices',
+    component: () => import('../views/Devices.vue'),
+    beforeEnter: () => {
+      if (!document.cookie || document.cookie == 'guest') {
+        return({name: 'warningForGuest'})
+      }
+    } 
+  },
+  {
+    path: '/arp_table',
+    name: 'ArpTable',
+    component: () => import('../views/ArpTable.vue'),
+    beforeEnter: () => {
+      if (!document.cookie || document.cookie == 'guest') {
+        return({name: 'warningForGuest'})
+      }
+    } 
+  },
+  {
+    path: '/adhoc_table',
+    name: 'AdhocTable',
+    component: () => import('../views/AdhocTable.vue'),
+    beforeEnter: () => {
+      if (!document.cookie || document.cookie == 'guest') {
+        return({name: 'warningForGuest'})
+      }
+    } 
+  },
+  {
     path: '/warningForGuest',
     name: 'warningForGuest',
     component: () => import('../views/notAuth.vue')

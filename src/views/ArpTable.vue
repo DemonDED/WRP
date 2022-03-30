@@ -30,7 +30,7 @@ export default {
   },
   mounted() {
 
-  }
+  },
   methods: {
     ipNeighData() {
       xhr.open( 'GET', `http://${urlHostName}/fcgi/ip_neigh`, true );
