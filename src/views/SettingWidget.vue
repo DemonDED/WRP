@@ -6,13 +6,13 @@
         <h1>НАСТРОЙКИ</h1>  
       </div>
     <div class="settingsForIp" v-for="item in dataSettings.network" :key="item"> 
-      <label for="ipValueForSettings" >{{ item.name }}</label>
+      <label class="portNameIp" for="ipValueForSettings" >{{ item.name }}</label>
       <input class="enterIp" name="ipValueForSettings" type="text" :value="item.ip_addr">
     </div>
 
     <div class="gpioSettings" v-for="gpio in dataSettings.gpio_power" :key="gpio">
-      <label for='checkBox'>{{ gpio.name }}</label>
-      <input type="checkbox" name="checkBox" :id="gpio.name">
+      <label class="gpioNames" for='checkBox'>{{ gpio.name }}</label>
+      <input class="checkBoxValue" type="checkbox" name="checkBox" :id="gpio.name">
     </div>
 
     <!--<input class="enterIp" id="test" type="text" pattern="(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))">
@@ -120,16 +120,51 @@ export default {
         saveSettings.disabled = true;
         acceptSettings.disabled = true;
       }
-       
+
     },
 
     acceptSettings() {
       ///////тестирование блокировки по проверке введенных данных\\\\\\\\\\\
 ////////////////////////////////////////////////////////////
+      const portNameIp = document.getElementsByClassName('portNameIp');
+      const ipValue = document.getElementsByClassName('enterIp');
+      const gpioNamesParams = document.getElementsByClassName('gpioNames');
+      const checkGpio = document.getElementsByClassName('checkBoxValue');
+
       let buttonId = 'acceptSettings';
       let loaderId = 'loaderForBtn';
       let okId = 'okForBtn';
       let textId = 'textForBtn';
+
+      let n = 0;
+      let portNames = [];
+      let network = [];
+      for (let item in portNameIp) {
+        portNames.push( item.textContent );
+      }
+      for ( let item in ipValue ) {
+        network.push( `{"name":"${portNames[n]}","ip_addr":"[${item.value}]"}` );
+        n++;
+      }
+      n = 0;
+      let gpioState = [];
+      let gpioPower = [];
+      for ( let item in checkGpio ) {
+        if ( checkGpio[n].checked ) {
+          gpioState.push( "Up" );
+          n++;
+        } else {
+          gpioState.push( "Down" );
+          n++;
+        }
+      }
+      n = 0;
+      for ( let item in gpioNamesParams ) {
+          gpioPower.push( `"state":"${gpioState[n]}","name":"${item.textContent}"` );
+          n++;
+        }
+      
+      let newSettingsMassive = `{"header":{},"gpio_power":[${gpioPower}],"network":[${network}]}`;
       this.loaderForButtons(buttonId, loaderId, okId, textId);
 
 
