@@ -64,7 +64,7 @@
 <script>
 // @ is an alias to /src
 const urlHostName = window.location.hostname;
-const xhr = new XMLHttpRequest();
+// const xhr = new XMLHttpRequest();
 
 export default {
   name: 'Home',
@@ -75,12 +75,12 @@ export default {
     }
   },
   mounted() {
-    xhr.open('GET', 'http://localhost:3001/first_stage', true)
-    xhr.send();
-    xhr.onload = () => {
-      this.wsDataMonitoring = JSON.parse(xhr.response);
-    }
-    // this.webSocketMonitoring();
+    // xhr.open('GET', 'http://localhost:3001/first_stage', true)
+    // xhr.send();
+    // xhr.onload = () => {
+    //   this.wsDataMonitoring = JSON.parse(xhr.response);
+    // }
+    this.webSocketMonitoring();
     
 
   },

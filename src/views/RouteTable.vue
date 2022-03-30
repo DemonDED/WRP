@@ -46,6 +46,10 @@ export default {
       ospfData: [],
     }
   },
+  mounted() {
+    this.ipRouteData();
+    this.ospf_Data();
+  },
   methods: {
     ipRouteData() {
       xhr.open( 'GET', `http://${urlHostName}/fcgi/ip_route`, true );
@@ -64,3 +68,21 @@ export default {
   },
 }
 </script>
+
+<style>
+  .hForTable {
+    background: #363636;
+    background-size: cover;
+    width: 100%;
+    height: 3em;
+    top: 20px;
+    position: relative;
+    z-index: 2;
+    border-radius: 10px 10px 0px 0px;
+    color: #FFB300;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-shadow: black 0px 3px 2px;
+  }
+</style>

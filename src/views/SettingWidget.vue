@@ -7,7 +7,7 @@
       </div>
     <div class="settingsForIp" v-for="item in dataSettings.network" :key="item"> 
       <label for="ipValueForSettings" >{{ item.name }}</label>
-      <input class="enterIp" name="ipValueForSettings" type="text">
+      <input class="enterIp" name="ipValueForSettings" type="text" :value="item.ip_addr">
     </div>
 
     <div class="gpioSettings" v-for="gpio in dataSettings.gpio_power" :key="gpio">
@@ -60,9 +60,11 @@ export default {
   },
   mounted() {
 
-    //xhr.open( 'GET', `http://${urlHostName}/fcgi/get_settings`, true );
-    //xhr.send();
-    //this.dataSettings = JSON.parse(xhr.response);
+    xhr.open( 'GET', `http://${urlHostName}/fcgi/get_settings`, true );
+    xhr.send();
+    xhr.onload = () => {
+      this.dataSettings = JSON.parse(xhr.response);
+    }
 
     setInterval(() => {
       this.testForIpValid();

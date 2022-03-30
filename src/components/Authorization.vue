@@ -34,9 +34,6 @@ export default {
       tokenAuth: [],
     }
   },
-  // mounted() {
-  //   document.cookie = cookie;
-  // },
   methods: {
     guestSession() {
       const mainContent = document.getElementById('content');
@@ -69,11 +66,12 @@ export default {
       xhr.open('POST', `http://${urlHostName}/fcgi/login`, true);
       xhr.send(`{"username": "${login}", "password": "${password}"}`)
       xhr.responseType = 'json';
-      this.tokenAuth = JSON.parse(xhr.response);
-      document.cookie = `${document.cookie};max-age:0;`
-      document.cookie = this.tokenAuth;
-
-      if (document.cookie) {
+      xhr.onload = () => {
+        this.tokenAuth = JSON.parse(xhr.response);
+      }
+      if (this.tokenAuth && document.cookie.length > 0) {
+        document.cookie = `${document.cookie};max-age:0;`
+        document.cookie = this.tokenAuth;
         setTimeout(() => {
           loader.style.display = 'none';
           okLoad.style.display = 'inline';
@@ -84,12 +82,10 @@ export default {
           enterButton.style.width = '262px';
           textBtn.style.display = 'inline';
           enterButton.disabled = false;
-          setTimeout(() => {
-            this.guestSession();
-          }, 1000)
+          // setTimeout(() => {
+            // this.guestSession();
+          // }, 1000)
         }, 4000)
-        
-
         console.log('Welcome Administrator!');
       } else {
         
@@ -113,11 +109,7 @@ export default {
         while (timeToBlock != 0) {
           enterButton.disabled = true;
           this.defendCounter = true;
-        
           timeToBlock -= 10;
-        
-          
-          console.log(timeToBlock);
         }
         
 

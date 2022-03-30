@@ -1,6 +1,6 @@
 <template>
   <div id="Main">
-    <AuthorizationVue id="authForm" v-show="!this.cookie"/>
+    <AuthorizationVue id="authForm" v-if="!this.cookie"/>
     <div id="preloader">
       <div id="loader"></div>
     </div>
@@ -19,8 +19,11 @@
         <div class="lvlConnection" id="lvl2"></div>
         <div class="lvlConnection" id="lvl3"></div>
 
-        <button id="exit" @click='exit()' v-show="this.cookie && this.cookie != 'guest'">
+        <button id="exit" @click='exit()' v-if="this.cookie && this.cookie != 'guest'">
           Выйти
+        </button>
+        <button id="enter" @click='enter()' v-if="!this.cookie || this.cookie == 'guest'">
+          Войти
         </button>
         
       </div>
@@ -52,6 +55,8 @@ export default {
     return {
       titelXhr: [],
       cookie,
+      enterUser: false,
+      component: 'AuthorizationVue',
     }
   },
   mounted() {
@@ -74,13 +79,18 @@ export default {
       xhr.send();
       this.titleXhr = JSON.parse(xhr.responseText);
     },
-    pingConnection() {
-      setInterval(() => {
-        let fetch = fetch('http://localhost:3000/', [])
+    // pingConnection() {
+    //   setInterval(() => {
+    //     let fetch = fetch('http://localhost:3000/', [])
 
 
-      }, 3000) 
+    //   }, 3000) 
       
+    // },
+    enter() {
+      document.cookie = `${document.cookie};max-age=0;`;
+      location.reload();
+      window.location.href = '/';
     },
     exit() {
       document.cookie = `${document.cookie};max-age=0;`;
@@ -207,6 +217,14 @@ export default {
   }
 
   #exit {
+    color: chocolate;
+    background: none;
+    border: 1px solid gray;
+    border-radius: 10px;
+    width: 5em;
+    cursor: pointer;
+  }
+  #enter {
     color: chocolate;
     background: none;
     border: 1px solid gray;

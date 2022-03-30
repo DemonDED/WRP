@@ -30,6 +30,9 @@ export default {
       linkData: [],
     }
   },
+  mounted() {
+    this.devicesLinked();
+  },
   methods: {
     devicesLinked() {
       xhr.open( 'GET', `http://${urlHostName}/fcgi/dumpleases` );

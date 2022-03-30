@@ -24,6 +24,9 @@ export default {
       wifiData: [],
     }
   },
+  mounted() {
+    this.wifiResponse();
+  },
   methods: {
     wifiResponse() {
       xhr.open( 'GET', `http://${urlHostName}/fcgi/wifi_adhoc`, true );
