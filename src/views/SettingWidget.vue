@@ -7,7 +7,7 @@
       </div>
     <div class="settingsForIp" v-for="item in dataSettings.network" :key="item"> 
       <label class="portNameIp" for="ipValueForSettings" >{{ item.name }}</label>
-      <input class="enterIp" name="ipValueForSettings" type="text" :value="item.ip_addr">
+      <input class="enterIp" name="ipValueForSettings" type="text" :value="item.ip_addr" pattern="(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))">
     </div>
 
     <div class="gpioSettings" v-for="gpio in dataSettings.gpio_power" :key="gpio">
@@ -149,7 +149,7 @@ export default {
       n = 0;
       let gpioState = [];
       let gpioPower = [];
-      for ( let item in checkGpio ) {
+      for ( let i = 0; i<=checkGpio.length; i++ ) {
         if ( checkGpio[n].checked ) {
           gpioState.push( "Up" );
           n++;
@@ -170,7 +170,7 @@ export default {
 
 
       xhr.open( 'POST', `http://${urlHostName}/save_settings`, true );
-      xhr.send('');
+      xhr.send(newSettingsMassive);
 
 
     //////Второй вариант обработчика\\\\\\

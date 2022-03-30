@@ -46,8 +46,10 @@
 <script>
 import AuthorizationVue from './components/Authorization.vue';
 
+const urlHostName = window.location.hostname;
 const xhr = new XMLHttpRequest();
 let cookie = document.cookie;
+
 export default {
   name: 'App',
   components: AuthorizationVue,
@@ -55,13 +57,13 @@ export default {
     return {
       titelXhr: [],
       cookie,
-      enterUser: false,
-      component: 'AuthorizationVue',
+      ping: false,
     }
   },
   mounted() {
     const authForm = document.getElementById('authForm');
     const mainContent = document.getElementById('content');
+    this.pingConnection();
 
     if (authForm.style.display != 'none') {
       mainContent.style.webkitFilter = 'blur(10px)';
@@ -79,14 +81,39 @@ export default {
       xhr.send();
       this.titleXhr = JSON.parse(xhr.responseText);
     },
-    // pingConnection() {
-    //   setInterval(() => {
-    //     let fetch = fetch('http://localhost:3000/', [])
-
-
-    //   }, 3000) 
-      
-    // },
+    pingConnection() {
+      const lvl1 = document.getElementById('lvl1');
+      const lvl2 = document.getElementById('lvl2');
+      const lvl3 = document.getElementById('lvl3');
+        xhr.timeout = 3000;
+      setInterval(() => {
+        xhr.open('POST', `http://${urlHostName}/header`, true);
+        xhr.send('ok');
+        xhr.ontimeout = () => {
+          lvl1.style.background = 'yellow';
+          lvl2.style.background = 'yellow';
+          lvl3.style.background = '#616161';
+        }
+        xhr.onload = () => {
+          if (xhr.response) {
+            lvl1.style.background = '#0fb900';
+            lvl2.style.background = '#0fb900';
+            lvl3.style.background = '#0fb900';
+          } else {
+            lvl1.style.background = 'red';
+            lvl2.style.background = '#616161';
+            lvl3.style.background = '#616161';
+          }
+        }
+        xhr.onerror = () => {
+          lvl1.style.background = 'red';
+          lvl2.style.background = '#616161';
+          lvl3.style.background = '#616161';
+          console.log('[error] Нет связи...')
+        }
+        
+      }, 2000)
+    },
     enter() {
       document.cookie = `${document.cookie};max-age=0;`;
       location.reload();
