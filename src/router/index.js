@@ -9,15 +9,15 @@ const routes = [
     component: () => import('../views/Monitoring.vue')
   },
   {
-    path: '/about',
-    name: 'About',
+    path: '/additional_information',
+    name: 'AdditionalInformation',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    component: () => import('../views/AdditionalInformation.vue'),
     beforeEnter: () => {
       if (!document.cookie || document.cookie == 'guest') {
-        return({name: 'warningForGuest'})
+        return({ name: 'warningForGuest' })
       }
     } 
   },
@@ -27,7 +27,7 @@ const routes = [
     component: () => import('../views/SettingWidget.vue'),
     beforeEnter: () => {
       if (!document.cookie || document.cookie == 'guest') {
-        return({name: 'warningForGuest'})
+        return({ name: 'warningForGuest' })
       }
     } 
   },
@@ -83,7 +83,7 @@ const router = createRouter({
   routes
 })
 
-router.beforeResolve((to, from, next) => {
+router.beforeResolve((to, next) => {
   if (to.path) {
     console.log('Загрузка');
     const preloader = document.getElementById('preloader');
@@ -100,7 +100,7 @@ router.afterEach(() => {
     let loader = document.getElementById('loader');
     preloader.style.display = 'none';
     loader.style.display = 'none';
-  }, 1000)
+  }, 3000)
   console.log('Готово');
 })
 

@@ -49,8 +49,8 @@ export default {
       const okLoad = document.getElementById('okForBtnAuth');
       const notOkLoad = document.getElementById('notOkForBtnAuth')
       const textBtn = document.getElementById('textBtnAuth');
-      const login = document.getElementById('loginInput');
-      const password = document.getElementById('passwordInput');
+      const login = document.getElementById('loginInput').value;
+      const password = document.getElementById('passwordInput').value;
       
       // animation \\
 
@@ -62,9 +62,12 @@ export default {
       loader.style.display = 'inline';
 
       // testing authorization \\
-
+      let dataAuth = {
+        username: login,
+        password: password
+      };
       xhr.open('POST', `http://${urlHostName}/fcgi/login`, true);
-      xhr.send(`{"username": "${login}", "password": "${password}"}`)
+      xhr.send(dataAuth);
       xhr.responseType = 'json';
       xhr.onload = () => {
         this.tokenAuth = JSON.parse(xhr.response);

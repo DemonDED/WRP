@@ -1,8 +1,7 @@
 <template>
   <div class="home">
-    
-    <div id="mainInformation">
-    
+    <ErrorData v-if="!this.ping"></ErrorData>
+    <div id="mainInformation" v-if="wsDataMonitoring.length > 100">
       <!--
         Здесь должна быть общая информация по БС и портам в ней
       -->
@@ -19,7 +18,7 @@
           </div>
           
       </div>
-      <div class="blockMainInformation">
+      <div class="blockMainInformation" v-if="wsDataMonitoring.length > 100">
 
         <div class="zag-1">
           <h1 class='h1'>Питание</h1>
@@ -34,7 +33,7 @@
       </div>
     </div>
 
-    <div>
+    <div v-if="wsDataMonitoring">
       <div class="back"> <h1>Мониторинг</h1> </div>
       <table id='monitoringTable'>
         <tr class="hTable">
@@ -62,12 +61,16 @@
 </template>
 
 <script>
+import ErrorData from '@/components/ErrorData.vue';
+
 // @ is an alias to /src
 const urlHostName = window.location.hostname;
-// const xhr = new XMLHttpRequest();
 
 export default {
   name: 'Home',
+  components: {
+    ErrorData,
+  },
   data() {
     return {
       wsDataMonitoring: [],
@@ -75,14 +78,7 @@ export default {
     }
   },
   mounted() {
-    // xhr.open('GET', 'http://localhost:3001/first_stage', true)
-    // xhr.send();
-    // xhr.onload = () => {
-    //   this.wsDataMonitoring = JSON.parse(xhr.response);
-    // }
     this.webSocketMonitoring();
-    
-
   },
   methods: {
     webSocketMonitoring() {
@@ -92,17 +88,17 @@ export default {
       if (this.wsMonitoring !== null) { this.wsMonitoring.onclose(); }
       this.wsMonitoring = new WebSocket(`ws://${urlHostName}:3000/monitoring`);
 
-      this.wsMonitoring.onopen = function(event) {
+      this.wsMonitoring.onopen = (event) => {
         console.log(`[open] Соединение установлено: ${event.code}`);
       }
       this.wsMonitoring.onmessage = (event) => {
         this.wsDataMonitoring = JSON.parse(event.data);
         console.log('[message] Данные WebSocketMonitoring получены...');
       }
-      this.wsMonitoring.onerror = function(error) {
+      this.wsMonitoring.onerror = (error) => {
         console.log('[error] WebSocketMonitoring Error: ' + error);
       }
-      this.wsMonitoring.onclose = function(event) {
+      this.wsMonitoring.onclose = (event) => {
         if (event.wasClean) {
           console.log(`[close] Соединение закрыто чисто, код=${event.code} причина=${event.reason}`);
         } else {

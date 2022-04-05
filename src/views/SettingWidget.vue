@@ -1,7 +1,7 @@
 <template>
 <div>
-
-  <div id="settingsGlobal">
+  <ErrorData v-if="!this.ping"></ErrorData>
+  <div id="settingsGlobal" v-if="dataSettings">
       <div>
         <h1>НАСТРОЙКИ</h1>  
       </div>
@@ -21,7 +21,7 @@
 
   </div>
 
-  <div class="settingsMain" style="display: flex;">
+  <div class="settingsMain" style="display: flex;" v-if="dataSettings">
     <button class="btnForInterface" id="acceptSettings" @click="acceptSettings()">
       <span class="textForBtn" id="textForBtn">Принять настройки</span>
       <img class="loaderForBtn" id="loaderForBtn" src="../components/load.svg" alt="" style="display:none;">
@@ -43,6 +43,8 @@
 </template>
 
 <script>
+import ErrorData from '@/components/ErrorData.vue';
+
 const xhr = new XMLHttpRequest();
 const urlHostName = window.location.hostname;
 
@@ -51,6 +53,9 @@ const urlHostName = window.location.hostname;
 
 
 export default {
+  components: {
+    ErrorData,
+  },
   data() {
     return {
       dataResponseForFirst: [],
@@ -110,9 +115,10 @@ export default {
         let testResult = regExp.test(ipValue[i].value);
         if (testResult) {
           check++;
+          console.log(check);
         }
       }
-      
+      console.log(ipValue.length);
       if (check == ipValue.length) {
         saveSettings.disabled = false;
         acceptSettings.disabled = false;
@@ -169,7 +175,7 @@ export default {
 
 
 
-      xhr.open( 'POST', `http://${urlHostName}/save_settings`, true );
+      xhr.open( 'POST', `http://${urlHostName}/fcgi/save_settings`, true );
       xhr.send(newSettingsMassive);
 
 
@@ -202,7 +208,7 @@ export default {
       let okId = 'okForBtn2';
       let textId = 'textForBtn2';
       this.loaderForButtons(buttonId, loaderId, okId, textId);
-      xhr.open( 'POST', `http://${urlHostName}/set_settings`, true );
+      xhr.open( 'POST', `http://${urlHostName}/fcgi/set_settings`, true );
       xhr.send('ok');
 
     },

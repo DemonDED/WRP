@@ -10,7 +10,7 @@
       
       <div id="buttonsForMenu">
         <router-link class="menuPunkt" :to="{ name: 'Monitoring' }">МОНИТОРИНГ</router-link>
-        <router-link class="menuPunkt" :to="{ name: 'About' }">ДОПОЛЬНИТЕЛЬНАЯ ИНФОРМАЦИЯ</router-link>
+        <router-link class="menuPunkt" :to="{ name: 'AdditionalInformation' }">ДОПОЛЬНИТЕЛЬНАЯ ИНФОРМАЦИЯ</router-link>
         <router-link class="menuPunkt" :to="{ name: 'Settings' }">НАСТРОЙКИ</router-link>
       </div>
       <div id="connectionWithBS"> 
@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="contentForRoute">
-    <router-view class="viewRoute" v-slot='{Component}' >
+    <router-view class="viewRoute" v-slot='{Component}' v-if="ping">
       <Transition name="contentVue" mode="out-in">
         <component :is='Component' />
       </Transition>
@@ -52,7 +52,9 @@ let cookie = document.cookie;
 
 export default {
   name: 'App',
-  components: AuthorizationVue,
+  components: {
+    AuthorizationVue,
+  },
   data() {
     return {
       titelXhr: [],
@@ -61,57 +63,44 @@ export default {
     }
   },
   mounted() {
-    const authForm = document.getElementById('authForm');
-    const mainContent = document.getElementById('content');
     this.pingConnection();
-
-    if (authForm.style.display != 'none') {
-      mainContent.style.webkitFilter = 'blur(10px)';
-    }
-    
     this.cookie = document.cookie;
-
-    // this.$nextTick(() => {
-      // this.mainXhr();
-    // })
   },
   methods: {
-    mainXhr() {
-      xhr.open('GET', 'http://localhost:3000/first_stage', true);
-      xhr.send();
-      this.titleXhr = JSON.parse(xhr.responseText);
-    },
     pingConnection() {
       const lvl1 = document.getElementById('lvl1');
       const lvl2 = document.getElementById('lvl2');
       const lvl3 = document.getElementById('lvl3');
-        xhr.timeout = 3000;
       setInterval(() => {
-        xhr.open('POST', `http://${urlHostName}/header`, true);
-        xhr.send('ok');
+        xhr.timeout = 3000;
         xhr.ontimeout = () => {
           lvl1.style.background = 'yellow';
           lvl2.style.background = 'yellow';
           lvl3.style.background = '#616161';
+          // xhr.abort();
         }
         xhr.onload = () => {
           if (xhr.response) {
             lvl1.style.background = '#0fb900';
             lvl2.style.background = '#0fb900';
             lvl3.style.background = '#0fb900';
+            this.ping = true;
           } else {
             lvl1.style.background = 'red';
             lvl2.style.background = '#616161';
             lvl3.style.background = '#616161';
+            this.ping = false;
           }
         }
-        xhr.onerror = () => {
+        xhr.onerror = (error) => {
           lvl1.style.background = 'red';
           lvl2.style.background = '#616161';
           lvl3.style.background = '#616161';
-          console.log('[error] Нет связи...')
+          this.ping = false;
+          console.log([error.total] + ' ' + 'Нет связи...')
         }
-        
+        xhr.open('GET', `http://${urlHostName}/fcgi/header`, true);
+        xhr.send('ok');
       }, 2000)
     },
     enter() {
