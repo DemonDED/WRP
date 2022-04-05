@@ -83,7 +83,7 @@ const router = createRouter({
   routes
 })
 
-router.beforeResolve((to, next) => {
+router.beforeResolve((to, from, next) => {
   if (to.path) {
     console.log('Загрузка');
     const preloader = document.getElementById('preloader');

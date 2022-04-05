@@ -77,7 +77,6 @@ export default {
           lvl1.style.background = 'yellow';
           lvl2.style.background = 'yellow';
           lvl3.style.background = '#616161';
-          // xhr.abort();
         }
         xhr.onload = () => {
           if (xhr.response) {
@@ -96,13 +95,14 @@ export default {
           lvl1.style.background = 'red';
           lvl2.style.background = '#616161';
           lvl3.style.background = '#616161';
-          this.ping = false;
           console.log([error.total] + ' ' + 'Нет связи...')
+          this.ping = false;
         }
         xhr.open('GET', `http://${urlHostName}/fcgi/header`, true);
         xhr.send('ok');
       }, 2000)
     },
+  
     enter() {
       document.cookie = `${document.cookie};max-age=0;`;
       location.reload();
@@ -218,7 +218,7 @@ export default {
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);
-    z-index: 2;
+    z-index: 10;
   }
 
   #footer {

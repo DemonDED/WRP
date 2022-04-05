@@ -1,11 +1,8 @@
 <template>
   <div class="home">
     <ErrorData v-if="!this.ping"></ErrorData>
-    <div id="mainInformation" v-if="wsDataMonitoring.length > 100">
-      <!--
-        Здесь должна быть общая информация по БС и портам в ней
-      -->
-      <div class="blockMainInformation">
+    <div id="mainInformation">
+      <div class="blockMainInformation" v-if='wsDataMonitoring.header && wsDataMonitoring.sysmon'>
 
         <div class="zag-1">
           <h1 class='h1'>Основная информация</h1>
@@ -18,7 +15,7 @@
           </div>
           
       </div>
-      <div class="blockMainInformation" v-if="wsDataMonitoring.length > 100">
+      <div class="blockMainInformation" v-if="wsDataMonitoring.powermon">
 
         <div class="zag-1">
           <h1 class='h1'>Питание</h1>
@@ -33,7 +30,7 @@
       </div>
     </div>
 
-    <div v-if="wsDataMonitoring">
+    <div v-if="wsDataMonitoring.network">
       <div class="back"> <h1>Мониторинг</h1> </div>
       <table id='monitoringTable'>
         <tr class="hTable">
@@ -75,17 +72,18 @@ export default {
     return {
       wsDataMonitoring: [],
       wsMonitoring: null,
+      ping: true
     }
   },
   mounted() {
+    if (this.wsMonitoring === null || this.wsMonitoring.readyState !== WebSocket.OPEN) {
+    if (this.wsMonitoring !== null) { this.wsMonitoring.onclose(); }
     this.webSocketMonitoring();
+    }
   },
   methods: {
     webSocketMonitoring() {
 
-    if (this.wsMonitoring === null || this.wsMonitoring.readyState !== WebSocket.OPEN) {
-
-      if (this.wsMonitoring !== null) { this.wsMonitoring.onclose(); }
       this.wsMonitoring = new WebSocket(`ws://${urlHostName}:3000/monitoring`);
 
       this.wsMonitoring.onopen = (event) => {
@@ -94,24 +92,28 @@ export default {
       this.wsMonitoring.onmessage = (event) => {
         this.wsDataMonitoring = JSON.parse(event.data);
         console.log('[message] Данные WebSocketMonitoring получены...');
+        this.ping = true;
       }
       this.wsMonitoring.onerror = (error) => {
         console.log('[error] WebSocketMonitoring Error: ' + error);
+        this.ping = false;
       }
       this.wsMonitoring.onclose = (event) => {
-        if (event.wasClean) {
+        if (event) {
           console.log(`[close] Соединение закрыто чисто, код=${event.code} причина=${event.reason}`);
         } else {
           console.log('Соединение прервано...');
+          this.ping = false;
         }
         
         setInterval( () => {
           console.log("[reconnect] Попытка переподключения к серверу...")
+          if (this.wsMonitoring === null || this.wsMonitoring.readyState !== WebSocket.OPEN) {
+          if (this.wsMonitoring !== null) { this.wsMonitoring.onclose(); }
           this.webSocketMonitoring();
+          }
         }, 2500)
       }
-      }
-
     }
   },
 }

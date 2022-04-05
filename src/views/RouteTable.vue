@@ -1,8 +1,8 @@
 <template>
   <div id="route">
     <div class="dataRoute">
+      <div class="hForTable">Таблица OSPF соседей</div>
       <table>
-        <div class="hForTable">Таблица OSPF соседей</div>
         <tr>
           <th>Router ID</th>
           <th>Adj Address</th>
@@ -70,19 +70,10 @@ export default {
 </script>
 
 <style>
-  .hForTable {
-    background: #363636;
-    background-size: cover;
-    width: 100%;
-    height: 3em;
-    top: 20px;
-    position: relative;
-    z-index: 2;
-    border-radius: 10px 10px 0px 0px;
-    color: #FFB300;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-shadow: black 0px 3px 2px;
+  #route {
+    display:flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: flex-start;
   }
 </style>

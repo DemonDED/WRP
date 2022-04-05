@@ -12,9 +12,9 @@
     </div>
     <button id="enterButton" class="enterButton" @click="authSession()">
       <span id="textBtnAuth">ВОЙТИ</span>
-      <img id="loaderForBtnAuth" src="../components/load.svg" alt="" style="display:none;">
-      <img id="okForBtnAuth" src="../components/ok.svg" alt="" style="display:none;">
-      <img id="notOkForBtnAuth" src="../components/notOk.svg" alt="" style="display:none;">
+      <img id="loaderForBtnAuth" src="@/components/load.svg" alt="загрузка..." style="display:none;">
+      <img id="okForBtnAuth" src="@/components/ok.svg" alt="Oк" style="display:none;">
+      <img id="notOkForBtnAuth" src="@/components/notOk.svg" alt="Ошибка" style="display:none;">
     </button>
     <label v-show="defendCounter === true" for="" style="color: red;">Превышено количество попыток ввода пароля</label>
     <button @click="guestSession()" style="color: #91BBFF;background:0;border:0;">Продолжить как гость</button>
@@ -36,11 +36,6 @@ export default {
   },
   methods: {
     guestSession() {
-      const mainContent = document.getElementById('content');
-      const authWindow = document.getElementById('about');
-
-      mainContent.style.webkitFilter = 'blur(0px)';
-      authWindow.style.display = 'none';
       document.cookie ='guest';
     },
     authSession() {
@@ -49,8 +44,9 @@ export default {
       const okLoad = document.getElementById('okForBtnAuth');
       const notOkLoad = document.getElementById('notOkForBtnAuth')
       const textBtn = document.getElementById('textBtnAuth');
-      const login = document.getElementById('loginInput').value;
-      const password = document.getElementById('passwordInput').value;
+
+      const login = document.getElementById('loginInput');
+      const password = document.getElementById('passwordInput');
       
       // animation \\
 
@@ -62,17 +58,13 @@ export default {
       loader.style.display = 'inline';
 
       // testing authorization \\
-      let dataAuth = {
-        username: login,
-        password: password
-      };
+      let dataAuth = `{\"username\":\"${login.value}\", \"password\":\"${password.value}\"}`;
       xhr.open('POST', `http://${urlHostName}/fcgi/login`, true);
       xhr.send(dataAuth);
-      xhr.responseType = 'json';
       xhr.onload = () => {
-        this.tokenAuth = JSON.parse(xhr.response);
+        this.tokenAuth = xhr.response;
       }
-      if (this.tokenAuth && document.cookie.length > 0) {
+      if (this.tokenAuth.length > 0) {
         document.cookie = `${document.cookie};max-age:0;`
         document.cookie = this.tokenAuth;
         setTimeout(() => {
