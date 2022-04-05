@@ -16,7 +16,7 @@
       <img id="okForBtnAuth" src="@/components/ok.svg" alt="Oк" style="display:none;">
       <img id="notOkForBtnAuth" src="@/components/notOk.svg" alt="Ошибка" style="display:none;">
     </button>
-    <label v-show="defendCounter === true" for="" style="color: red;">Превышено количество попыток ввода пароля</label>
+    <label v-if="defendCounter === true" for="" style="color: red;">Превышено количество попыток ввода пароля</label>
     <button @click="guestSession()" style="color: #91BBFF;background:0;border:0;">Продолжить как гость</button>
   </div>
   </div>
@@ -56,15 +56,12 @@ export default {
       enterButton.style.height = '64px';
       enterButton.style.borderRadius = '10px';
       loader.style.display = 'inline';
-
       // testing authorization \\
       let dataAuth = `{\"username\":\"${login.value}\", \"password\":\"${password.value}\"}`;
-      xhr.open('POST', `http://${urlHostName}/fcgi/login`, true);
-      xhr.send(dataAuth);
       xhr.onload = () => {
         this.tokenAuth = xhr.response;
-      }
-      if (this.tokenAuth.length > 0) {
+      
+      if (this.tokenAuth) {
         document.cookie = `${document.cookie};max-age:0;`
         document.cookie = this.tokenAuth;
         setTimeout(() => {
@@ -77,13 +74,9 @@ export default {
           enterButton.style.width = '262px';
           textBtn.style.display = 'inline';
           enterButton.disabled = false;
-          // setTimeout(() => {
-            // this.guestSession();
-          // }, 1000)
         }, 4000)
         console.log('Welcome Administrator!');
       } else {
-        
         timeToBlock = timeToBlock + 100;
         console.log(timeToBlock)
         
@@ -99,18 +92,21 @@ export default {
           enterButton.disabled = false;
         }, 3000)
       }
+    }
+      xhr.open('POST', `http://${urlHostName}/fcgi/login`, true);
+      xhr.send(dataAuth);
       if (timeToBlock == 300) {
-        
         while (timeToBlock != 0) {
           enterButton.disabled = true;
           this.defendCounter = true;
           timeToBlock -= 10;
         }
-        
-
       }
-      
-    }
+
+
+
+
+    },
   }
 }
 </script>

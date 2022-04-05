@@ -1,6 +1,6 @@
 <template>
   <div id="Main">
-    <AuthorizationVue id="authForm" v-if="!this.cookie"/>
+    <AuthorizationVue id="authForm" v-if="!cookie"/>
     <div id="preloader">
       <div id="loader"></div>
     </div>
@@ -48,7 +48,6 @@ import AuthorizationVue from './components/Authorization.vue';
 
 const urlHostName = window.location.hostname;
 const xhr = new XMLHttpRequest();
-let cookie = document.cookie;
 
 export default {
   name: 'App',
@@ -58,13 +57,15 @@ export default {
   data() {
     return {
       titelXhr: [],
-      cookie,
+      cookie: '',
       ping: false,
     }
   },
   mounted() {
     this.pingConnection();
-    this.cookie = document.cookie;
+    setInterval( () => {
+      this.cookie = document.cookie;
+    },1000)
   },
   methods: {
     pingConnection() {
@@ -232,20 +233,13 @@ export default {
     margin-right: 5em;
   }
 
-  #exit {
-    color: chocolate;
+  #exit, #enter {
+    color: #FFB300;
     background: none;
     border: 1px solid gray;
     border-radius: 10px;
     width: 5em;
     cursor: pointer;
   }
-  #enter {
-    color: chocolate;
-    background: none;
-    border: 1px solid gray;
-    border-radius: 10px;
-    width: 5em;
-    cursor: pointer;
-  }
+  
 </style>
