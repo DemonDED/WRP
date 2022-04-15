@@ -1,7 +1,7 @@
 <template>
   <div id="devices">
     <div>
-      <div class="hForTable">Список подключенных устройств</div>
+      <div class="hForTable" v-if='linkData'>Список подключенных устройств</div>
       <table>
         <tr>
           <th>MAC addr</th>

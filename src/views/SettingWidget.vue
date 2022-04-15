@@ -1,8 +1,8 @@
 <template>
 <div>
-  <ErrorData v-if="!this.ping"></ErrorData>
+  <ErrorData v-if="!dataSettings"></ErrorData>
   <div id="settingsGlobal" v-if="dataSettings">
-      <div>
+      <div class='h1ForTable'>
         <h1>НАСТРОЙКИ</h1>  
       </div>
     <div class="settingsForIp" v-for="item in dataSettings.network" :key="item"> 
@@ -10,15 +10,15 @@
       <input class="enterIp" name="ipValueForSettings" type="text" :value="item.ip_addr" pattern="(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))">
     </div>
 
+    <div v-for='(value, name) in dataSettings.header' :key='value'>
+      <label>{{ name }}</label>
+      <input  />
+    </div>
+
     <div class="gpioSettings" v-for="gpio in dataSettings.gpio_power" :key="gpio">
       <label class="gpioNames" for='checkBox'>{{ gpio.name }}</label>
       <input class="checkBoxValue" type="checkbox" name="checkBox" :id="gpio.name">
     </div>
-
-    <!--<input class="enterIp" id="test" type="text" pattern="(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))">
-    <input class="enterIp" id="test" type="text" pattern="(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))">
-    <input class="enterIp" id="test" type="text" pattern="(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))">-->
-
   </div>
 
   <div class="settingsMain" style="display: flex;" v-if="dataSettings">
@@ -58,18 +58,15 @@ export default {
   },
   data() {
     return {
-      dataResponseForFirst: [],
       dataSettings: [],
-      statusIp: true,
     }
   },
   mounted() {
-
-    xhr.open( 'GET', `http://${urlHostName}/fcgi/get_settings`, true );
-    xhr.send();
     xhr.onload = () => {
       this.dataSettings = JSON.parse(xhr.response);
     }
+    xhr.open( 'GET', `http://${urlHostName}/fcgi/get_settings`, true );
+    xhr.send();
 
     setInterval(() => {
       this.testForIpValid();
@@ -105,20 +102,18 @@ export default {
 
     },
     testForIpValid() {
-      // const buttonsForSettings = document.getElementsByClassName('btnForInterface');
       const saveSettings = document.getElementById('saveSettings');
       const acceptSettings = document.getElementById('acceptSettings');
       const ipValue = document.getElementsByClassName('enterIp');
+
       const regExp = /^(25[0-4]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\/([1][6-9]|[2][0-9]|[3][0-1]))?$/;
       let check = 0;
       for ( let i = 0 ; i<=ipValue.length ; i++ ) {
-        let testResult = regExp.test(ipValue[i].value);
-        if (testResult) {
+        regExp.test(ipValue[i].value);
+        if (regExp.test(ipValue[i].value)) {
           check++;
-          console.log(check);
         }
       }
-      console.log(ipValue.length);
       if (check == ipValue.length) {
         saveSettings.disabled = false;
         acceptSettings.disabled = false;
@@ -130,8 +125,6 @@ export default {
     },
 
     acceptSettings() {
-      ///////тестирование блокировки по проверке введенных данных\\\\\\\\\\\
-////////////////////////////////////////////////////////////
       const portNameIp = document.getElementsByClassName('portNameIp');
       const ipValue = document.getElementsByClassName('enterIp');
       const gpioNamesParams = document.getElementsByClassName('gpioNames');
@@ -173,33 +166,8 @@ export default {
       let newSettingsMassive = `{"header":{},"gpio_power":[${gpioPower}],"network":[${network}]}`;
       this.loaderForButtons(buttonId, loaderId, okId, textId);
 
-
-
       xhr.open( 'POST', `http://${urlHostName}/fcgi/save_settings`, true );
       xhr.send(newSettingsMassive);
-
-
-    //////Второй вариант обработчика\\\\\\
-
-    //   const btn1 = document.querySelector('#btn1');
-    //   xhr.open('GET', 'http://localhost:3000/first_stage', true);
-    //   xhr.send();
-    //   xhr.onreadystatechange = () => {
-    //     if (xhr.readyState != 4) return;
-    //     btn1.innerHTML = 'Готово!';
-    //     if (xhr.status != 200) {
-    //       console.log(xhr.status + ': ' + xhr.statusText);
-    //     } else {
-    //       console.log(xhr.responseText);
-    //       this.dataResponseForFirst = JSON.parse(xhr.responseText);
-    //       setTimeout(function () {
-    //         btn1.disabled = false;
-    //         btn1.innerHTML = 'Тестовый запрос 1';
-    //       }, 2000)
-    //     }
-    //   }
-    // btn1.innerHTML = 'Загружаю...';
-    // btn1.disabled = true; 
     },
     saveSettings() {
       
@@ -233,16 +201,30 @@ export default {
 </script>
 
 <style>
-
- /* #btn1 {
-   border: 0px;
-   border-radius: 10px;
-   background: #8c8c8c;
-   box-shadow: 0px 1px 3px 0.65px;
-   width: 10em;
-   height: 2em;
-   cursor: pointer;
- } */
+  #settingsGlobal {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: #636363;
+    border-radius: 1px;
+  }
+  .settingsForIp, .gpioSettings {
+    display:flex;
+    justify-content: space-around;
+    align-items:center;
+    width:70%;
+  }
+  .h1ForTable {
+    display:flex;
+    justify-content: center;
+    background: #363636;
+    width: 100%;
+    border-radius: 10px 10px 0px 0px;
+    color: #FFB300;
+    text-shadow: black 0px 3px 2px;
+  }
  .btnForInterface {
     margin: 30px;
     width: 324px;
@@ -262,10 +244,9 @@ export default {
     transition-duration: 0.1s;
     position: relative;
   }
-
-
   .enterIp {
-    width: 50%;
+    width: 300px;
+    height: 30px;
     background: #8C8C8C;
     border: 1px solid #C2C2C2;
     border-radius: 10px;
@@ -276,6 +257,7 @@ export default {
     outline: none;
   }
   .enterIp:invalid {
+    box-shadow: 0.5px 0.5px 10px 0.1px red;
     border: 1px solid red;
     content: 'Invalid Syntax';
   }

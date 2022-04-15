@@ -1,4 +1,5 @@
 <template>
+<ErrorData v-if='!ping'></ErrorData>
   <div class="about">
     <div id='adhocAndArp'>
       <AdhocTable></AdhocTable>
@@ -19,14 +20,31 @@ import ArpTable from './ArpTable.vue';
 import RouteTable from './RouteTable.vue';
 import Devices from './Devices.vue';
 
+const xhr = new XMLHttpRequest();
+const urlHostName = window.location.hostname;
+
 export default {
   name: 'AdditionalInformation',
   components: {
     AdhocTable,
     ArpTable,
     RouteTable,
-    Devices
+    Devices,
   },
+  data() {
+    return {
+      ping: false,
+    }
+  },
+  mounted() {
+    setInterval( () => {
+      xhr.onload = () => {
+        this.ping = true;
+      }
+      xhr.open('GET', `http://${urlHostName}/fcgi/sysmon`, true);
+      xhr.send();
+    }, 2000)
+  }
 }
 </script>
 

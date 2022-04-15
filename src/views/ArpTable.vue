@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="hForTable">Таблица ARP</div>
+    <div class="hForTable" v-if='neighData'>Таблица ARP</div>
     <table>
       <tr>
         <th>DST</th>

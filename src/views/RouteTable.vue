@@ -1,6 +1,6 @@
 <template>
   <div id="route">
-    <div class="dataRoute">
+    <div class="dataRoute" v-if='ospfData'>
       <div class="hForTable">Таблица OSPF соседей</div>
       <table>
         <tr>
@@ -15,7 +15,7 @@
         </tr>
       </table>
     </div>
-    <div class="dataRoute">
+    <div class="dataRoute" v-if='routeData'>
       <div class="hForTable">Таблица маршрутизации</div>
       <table>
         <tr>

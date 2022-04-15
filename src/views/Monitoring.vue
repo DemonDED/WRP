@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <ErrorData v-if="!this.ping"></ErrorData>
+    <ErrorData v-if="!this.ping || !wsDataMonitoring.header && !wsDataMonitoring.sysmon"></ErrorData>
     <div id="mainInformation">
       <div class="blockMainInformation" v-if='wsDataMonitoring.header && wsDataMonitoring.sysmon'>
 
@@ -59,7 +59,8 @@
 
 <script>
 import ErrorData from '@/components/ErrorData.vue';
-
+const xhr = new XMLHttpRequest();
+// import axios from 'axios';
 // @ is an alias to /src
 const urlHostName = window.location.hostname;
 
@@ -76,14 +77,29 @@ export default {
     }
   },
   mounted() {
-    if (this.wsMonitoring === null || this.wsMonitoring.readyState !== WebSocket.OPEN) {
-    if (this.wsMonitoring !== null) { this.wsMonitoring.onclose(); }
-    this.webSocketMonitoring();
-    }
+    setInterval( () => {
+      this.pingConnection();
+    }, 3000)
   },
   methods: {
+    pingConnection() {
+        xhr.onload = () => {
+          if (xhr.response) {
+          this.ping = true;
+          this.webSocketMonitoring();
+        } else {
+          console.log('Сервер не отвечает');
+          this.ping = false;
+          if (this.wsMonitoring !== null) { this.wsMonitoring.close() }
+        }
+        }
+        xhr.open('GET', `http://${urlHostName}/fcgi/header`);
+        xhr.send();
+      
+    },
     webSocketMonitoring() {
-
+    if (this.wsMonitoring === null || this.wsMonitoring.readyState !== WebSocket.OPEN) {
+    if (this.wsMonitoring !== null) { this.wsMonitoring.close(); }
       this.wsMonitoring = new WebSocket(`ws://${urlHostName}:3000/monitoring`);
 
       this.wsMonitoring.onopen = (event) => {
@@ -96,6 +112,7 @@ export default {
       }
       this.wsMonitoring.onerror = (error) => {
         console.log('[error] WebSocketMonitoring Error: ' + error);
+        this.wsMonitoring.close();
         this.ping = false;
       }
       this.wsMonitoring.onclose = (event) => {
@@ -104,16 +121,13 @@ export default {
         } else {
           console.log('Соединение прервано...');
           this.ping = false;
-        }
-        
         setInterval( () => {
           console.log("[reconnect] Попытка переподключения к серверу...")
-          if (this.wsMonitoring === null || this.wsMonitoring.readyState !== WebSocket.OPEN) {
-          if (this.wsMonitoring !== null) { this.wsMonitoring.onclose(); }
           this.webSocketMonitoring();
-          }
         }, 2500)
+        }
       }
+    }
     }
   },
 }

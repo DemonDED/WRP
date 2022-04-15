@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="hForTable">Станции AdHoc</div>
+    <div class="hForTable" v-if='wifiData'>Станции AdHoc</div>
     <table>
       <tr>
         <th>MAC addr</th>
@@ -22,6 +22,7 @@ export default {
   data() {
     return {
       wifiData: [],
+      ping: false,
     }
   },
   mounted() {
